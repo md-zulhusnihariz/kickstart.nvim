@@ -3,9 +3,24 @@
 -- config. This will add also the recommended keymaps.
 
 return {
-  {
+  -- Here is a more advanced example where we pass configuration
+  -- options to `gitsigns.nvim`.
+  -- See `:help gitsigns` to understand what the configuration keys do
+  { -- Adds git related signs to the gutter, as well as utilities for managing changes
     'lewis6991/gitsigns.nvim',
     opts = {
+      signs = {
+        add = { text = '+' },
+        change = { text = '~' },
+        delete = { text = '_' },
+        topdelete = { text = '‾' },
+        changedelete = { text = '~' },
+      },
+      preview_config = {
+        -- Options passed to nvim_open_win
+        style = 'minimal',
+      },
+
       on_attach = function(bufnr)
         local gitsigns = require 'gitsigns'
 
@@ -15,7 +30,7 @@ return {
           vim.keymap.set(mode, l, r, opts)
         end
 
-        -- Navigation
+        -- Navigation, numhl = '', linehl = ''
         map('n', ']c', function()
           if vim.wo.diff then
             vim.cmd.normal { ']c', bang = true }
@@ -55,6 +70,9 @@ return {
         -- Toggles
         map('n', '<leader>tb', gitsigns.toggle_current_line_blame, { desc = '[T]oggle git show [b]lame line' })
         map('n', '<leader>tD', gitsigns.preview_hunk_inline, { desc = '[T]oggle git show [D]eleted' })
+
+        local set = vim.opt -- set options
+        set.fillchars = set.fillchars + 'diff: '
       end,
     },
   },
